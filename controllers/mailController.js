@@ -1,40 +1,33 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';    
-
+// routes/mailRoutes.js
+import express from "express";
+import { Resend } from "resend";
+import dotenv from 'dotenv';
+const router = express.Router();
 dotenv.config();
 
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const sendMail = async (req, res) => {
-    const {firstname, lastname, email, message} = req.body;
+export const sendMail=  async (req, res) => {
+  const { firstname, lastname, email, message } = req.body;
 
-    if (!firstname || !lastname || !email || !message) {
-        return res.status(400).json({ error: 'All fields are required.' });
-    }
-    try{
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth:{
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            }
-        })
-        const mailOptions = {
-            from: `${firstname} ${lastname} <${email}>`,
-            to: process.env.EMAIL_USER,
-            subject: `New message from ${firstname} ${lastname}`,
-              html: `
-        <h2>New Message from Portfolio </h2>
-        <p><strong>First Name:</strong> ${firstname}</p>
-        <p><strong>Last Name:</strong> ${lastname}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      `,
-        };
-        await transporter.sendMail(mailOptions);
-        res.status(200).json({ message: 'Email sent successfully.' });
-    } catch (error) {
-        console.error('Error sending email:', error);
-        res.status(500).json({ error: 'Failed to send email.' });
-    }
-}
+  if (!firstname || !lastname || !email || !message) {
+    return res.status(400).json({ success: false, error: "All fields are required" });
+  }
+
+  try {
+    await resend.emails.send({
+      from: "Portfolio Contact <onboarding@resend.dev>",
+      to: "charlesjiwueze826@gmail.com",
+      subject: `Message from ${firstname} ${lastname}`,
+      text: `From: ${firstname} ${lastname}\nEmail: ${email}\n\nMessage:\n${message}`,
+    });
+
+    res.status(200).json({ success: true, message: "Message sent successfully" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ success: false, error: "Failed to send message" });
+  }
+};
+
+export default router;
+
