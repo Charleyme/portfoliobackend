@@ -11,7 +11,12 @@ dotenv.config();
 const app = express();
 
 //middlewares//
-app.use(cors());
+
+app.use(cors({
+  origin: ["https://Charleyme.vercel.app"],
+  credentials: true,
+}));
+
 app.use(express.json());
 
 //routes
