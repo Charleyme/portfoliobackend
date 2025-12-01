@@ -12,10 +12,18 @@ const app = express();
 
 //middlewares//
 
-app.use(cors({
-  origin: ["https://Charleyme.vercel.app"],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://charleyme.vercel.app",  // your frontend domain
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+;
 
 app.use(express.json());
 
