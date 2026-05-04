@@ -15,7 +15,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
+      "http://localhost:5173",  // your frontend domain for local development
       "https://charleyme.vercel.app",  // your frontend domain
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
